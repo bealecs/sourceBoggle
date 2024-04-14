@@ -54,7 +54,7 @@ const BoggleBoard = () => {
           key={colIndex}
           className="border border-gray-400 w-32 h-32 flex items-center justify-center p-20"
         >
-          <p className="text-8xl p-20">{letter}</p> {/* Display letter */}
+          <p className="text-3xl p-20">{letter}</p> {/* Display letter */}
         </div>
       ))}
     </div>
