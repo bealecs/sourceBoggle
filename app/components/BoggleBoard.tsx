@@ -25,7 +25,7 @@ const BoggleBoard = () => {
   // Function to start the timer
   const startTimer = () => {
     setTimerRunning(true);
-    setTimeLeft(60); // Reset time left to 60 seconds
+    setTimeLeft(180); // Reset time left to 60 seconds
   };
 
   // Effect to start the timer when timerRunning state changes
@@ -52,9 +52,9 @@ const BoggleBoard = () => {
       {row.map((letter, colIndex) => (
         <div
           key={colIndex}
-          className="border border-gray-400 w-16 h-16 flex items-center justify-center"
+          className="border border-gray-400 w-32 h-32 flex items-center justify-center p-20"
         >
-          <p>{letter}</p> {/* Display letter */}
+          <p className="text-8xl p-20">{letter}</p> {/* Display letter */}
         </div>
       ))}
     </div>
