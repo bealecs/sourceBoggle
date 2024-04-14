@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 
 const BoggleBoard = () => {
-  // Generate a 3x3 grid
+  // Generate a 4x4 grid
   const alphabet = [
     "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
     "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
@@ -14,8 +14,8 @@ const BoggleBoard = () => {
   };
 
   // Initial state for the board letters
-  const initialLetters = Array.from({ length: 3 }, () =>
-    Array.from({ length: 3 }, () => generateRandomLetter())
+  const initialLetters = Array.from({ length: 4 }, () =>
+    Array.from({ length: 4 }, () => generateRandomLetter())
   );
 
   const [boardLetters, setBoardLetters] = useState(initialLetters);
@@ -41,8 +41,8 @@ const BoggleBoard = () => {
 
   // Function to handle generating new board
   const handleClick = () => {
-    setBoardLetters(Array.from({ length: 3 }, () =>
-      Array.from({ length: 3 }, () => generateRandomLetter())
+    setBoardLetters(Array.from({ length: 4 }, () =>
+      Array.from({ length: 4 }, () => generateRandomLetter())
     ));
     startTimer(); // Start the timer when generating new board
   };
