@@ -52,9 +52,9 @@ const BoggleBoard = () => {
       {row.map((letter, colIndex) => (
         <div
           key={colIndex}
-          className="border border-gray-400 w-32 h-32 flex items-center justify-center p-20"
+          className="border border-gray-400 w-32 h-32 flex items-center justify-center"
         >
-          <p className="text-3xl p-20">{letter}</p> {/* Display letter */}
+          <p className="text-3xl">{letter}</p> {/* Display letter */}
         </div>
       ))}
     </div>
