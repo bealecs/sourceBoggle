@@ -19,7 +19,7 @@ const BoggleBoard = () => {
   );
 
   const [boardLetters, setBoardLetters] = useState(initialLetters);
-  const [timeLeft, setTimeLeft] = useState(60); // Initial time left is 60 seconds
+  const [timeLeft, setTimeLeft] = useState(180); // Initial time left is 60 seconds
   const [timerRunning, setTimerRunning] = useState(false); // State to track if timer is running
 
   // Function to start the timer
@@ -61,7 +61,7 @@ const BoggleBoard = () => {
   ));
 
   return (
-    <div className="w-64">
+    <div>
       {rows}
       <button onClick={handleClick}>Generate new board</button>
       <p>Time Left: {timeLeft} seconds</p>
