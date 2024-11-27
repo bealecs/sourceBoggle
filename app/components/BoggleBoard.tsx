@@ -22,14 +22,17 @@ const BoggleBoard = () => {
   ];
 
   const [usedDice, setUsedDice] = useState([]);
-  const [timeLeft, setTimeLeft] = useState(180); // Initial time left is 180 seconds
+  const [timeLeft, setTimeLeft] = useState(210); // Initial time left is 210 seconds
   const [timerRunning, setTimerRunning] = useState(false); // State to track if timer is running
   const [boardLetters, setBoardLetters] = useState([]);
+  const [boardRotations, setBoardRotations] = useState([]); // New state for storing rotations
+
+  const rotations = [90, 180, 270];
 
   // Function to start the timer
   const startTimer = () => {
     setTimerRunning(true);
-    setTimeLeft(180); // Reset time left to 180 seconds
+    setTimeLeft(210); // Reset time left to 210 seconds
   };
 
   // Function to select a random letter from a die and mark it as used
@@ -38,18 +41,24 @@ const BoggleBoard = () => {
     const remainingLetters = die.filter((_, index) => !usedDice.includes(dieIndex * 6 + index));
     const randomIndex = Math.floor(Math.random() * remainingLetters.length);
     const letter = remainingLetters[randomIndex];
-    console.log(`Getting letter ${letter} from die ${dieIndex} at index ${die.indexOf(letter)}`);
     setUsedDice([...usedDice, dieIndex * 6 + die.indexOf(letter)]);
     return letter;
+  };
+
+  // Function to generate random rotations for the dice
+  const generateRandomRotations = () => {
+    return Array.from({ length: 16 }, () => rotations[Math.floor(Math.random() * rotations.length)]);
   };
 
   // Function to handle generating new board
   const handleClick = () => {
     setUsedDice([]);
+    const newRotations = generateRandomRotations(); // Generate new rotations
     const newBoardLetters = Array.from({ length: 4 }, (_, rowIndex) =>
       Array.from({ length: 4 }, (_, colIndex) => selectRandomLetter(rowIndex * 4 + colIndex))
     );
     setBoardLetters(newBoardLetters);
+    setBoardRotations(newRotations); // Store rotations in the state
     startTimer(); // Start the timer when generating new board
   };
 
@@ -73,7 +82,7 @@ const BoggleBoard = () => {
       {row.map((letter, colIndex) => (
         <div
           key={colIndex}
-          className="border border-gray-400 w-16 h-16 sm:w-32 sm:h-32 flex items-center justify-center rounded-xl m-1 shadow-lg bg-white text-black font-bold text-3xl p-2"
+          className={`border border-gray-400 w-16 rotate-${boardRotations[rowIndex * 4 + colIndex]} h-16 sm:w-32 sm:h-32 flex items-center justify-center rounded-xl m-1 shadow-lg bg-white text-black font-bold text-3xl p-2`}
         >
           {letter} {/* Display letter */}
         </div>
