@@ -27,7 +27,7 @@ const BoggleBoard = () => {
   const [boardLetters, setBoardLetters] = useState([]);
   const [boardRotations, setBoardRotations] = useState([]); // New state for storing rotations
 
-  const rotations = [90, 180, 270];
+  const rotations = [0, 90, 180, 270];
 
   // Function to start the timer
   const startTimer = () => {
@@ -38,10 +38,8 @@ const BoggleBoard = () => {
   // Function to select a random letter from a die and mark it as used
   const selectRandomLetter = (dieIndex) => {
     const die = dice[dieIndex];
-    const remainingLetters = die.filter((_, index) => !usedDice.includes(dieIndex * 6 + index));
-    const randomIndex = Math.floor(Math.random() * remainingLetters.length);
-    const letter = remainingLetters[randomIndex];
-    setUsedDice([...usedDice, dieIndex * 6 + die.indexOf(letter)]);
+    const randomIndex = Math.floor(Math.random() * die.length);
+    const letter = die[randomIndex];
     return letter;
   };
 
@@ -52,7 +50,7 @@ const BoggleBoard = () => {
 
   // Function to handle generating new board
   const handleClick = () => {
-    setUsedDice([]);
+    setUsedDice([]); // Reset used dice
     const newRotations = generateRandomRotations(); // Generate new rotations
     const newBoardLetters = Array.from({ length: 4 }, (_, rowIndex) =>
       Array.from({ length: 4 }, (_, colIndex) => selectRandomLetter(rowIndex * 4 + colIndex))
@@ -79,14 +77,20 @@ const BoggleBoard = () => {
 
   const rows = boardLetters.map((row, rowIndex) => (
     <div key={rowIndex} className="flex">
-      {row.map((letter, colIndex) => (
-        <div
-          key={colIndex}
-          className={`border border-gray-400 w-16 rotate-${boardRotations[rowIndex * 4 + colIndex]} h-16 sm:w-32 sm:h-32 flex items-center justify-center rounded-xl m-1 shadow-lg bg-white text-black font-bold text-3xl p-2`}
-        >
-          {letter} {/* Display letter */}
-        </div>
-      ))}
+      {row.map((letter, colIndex) => {
+        const rotation = boardRotations[rowIndex * 4 + colIndex];
+        return (
+          <div
+            key={colIndex}
+            className={`border border-gray-400 w-16 h-16 sm:w-32 sm:h-32 flex items-center justify-center rounded-xl m-1 shadow-lg bg-white text-black font-bold text-3xl p-2`}
+            style={{
+              transform: `rotate(${rotation}deg)`,
+            }}
+          >
+            {letter} {/* Display letter */}
+          </div>
+        );
+      })}
     </div>
   ));
 
