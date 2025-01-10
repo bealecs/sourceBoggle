@@ -1,5 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { checkWord } from "../util/checkWord";
 
 interface Player {
   letterCount: string[];
@@ -7,7 +9,13 @@ interface Player {
   currentPoints: number;
 }
 
-const BoggleBoard = () => {
+const ActiveGame = ({
+  game_code,
+  players,
+}: {
+  game_code: number;
+  players: string[];
+}) => {
   const dice = [
     ["R", "I", "F", "O", "B", "X"],
     ["I", "F", "E", "H", "E", "Y"],
@@ -35,6 +43,7 @@ const BoggleBoard = () => {
   const [timerRunning, setTimerRunning] = useState(false); // State to track if timer is running
   const [boardLetters, setBoardLetters] = useState([]);
   const [boardRotations, setBoardRotations] = useState([]); // New state for storing rotations
+  const router = useRouter();
 
   const rotations = [0, 90, 180, 270];
 
@@ -82,128 +91,37 @@ const BoggleBoard = () => {
     startTimer(); // Start the timer when generating new board
   };
 
-  const checkWord = async (player: Player) => {
-    const wordToCheck = player.letterCount.join(""); // Convert to string
-
-    if (wordToCheck.length < 3) {
-      console.log("You must have atleast 3 letters in your word!");
-      return;
-    }
-
-    console.log("checking word", wordToCheck);
-    try {
-      const res = await fetch(
-        `https://dictionaryapi.com/api/v3/references/collegiate/json/${wordToCheck}?key=b72e4758-4d38-4206-8ba9-245beaca916b`
-      );
-      if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
-      const data = await res.json();
-      console.log(data);
-
-      //checks to make sure the given response is a valid word according to results from merriam webster's dictionary
-      let success = false;
-      data.map((dataEntry) => {
-        if (
-          dataEntry.fl === "verb" ||
-          dataEntry.fl === "noun" ||
-          dataEntry.fl === "adjective" ||
-          dataEntry.fl === "adverb"
-        ) {
-          success = true;
-        }
-      });
-
-      if (success) {
-        player.wordCount.push(wordToCheck);
-        let wordLength = wordToCheck.length;
-        switch (wordLength) {
-          case 3:
-            player.currentPoints += 1;
-            console.log("Success! +1 point");
-            break;
-          case 4:
-            player.currentPoints += 2;
-            console.log("Success! +2 points");
-            break;
-          case 5:
-            player.currentPoints += 3;
-            console.log("Success! +3 points");
-            break;
-          case 6:
-            player.currentPoints += 4;
-            console.log("Success! +4 points");
-            break;
-          case 7:
-            player.currentPoints += 5;
-            console.log("Success! +5 points");
-            break;
-          case 8:
-            player.currentPoints += 6;
-            console.log("Success! +6 points");
-            break;
-          case 9:
-            player.currentPoints += 7;
-            console.log("Success! +7 points");
-            break;
-          case 10:
-            player.currentPoints += 8;
-            console.log("Success! +8 points");
-            break;
-          case 11:
-            player.currentPoints += 9;
-            console.log("Success! +9 points");
-            break;
-          case 12:
-            player.currentPoints += 10;
-            console.log("Success! +10 points");
-            break;
-          case 13:
-            player.currentPoints += 11;
-            console.log("Success! +11 points");
-            break;
-          case 14:
-            player.currentPoints += 12;
-            console.log("Success! +12 points");
-            break;
-          case 15:
-            player.currentPoints += 13;
-            console.log("Success! +13 points");
-            break;
-          case 16:
-            player.currentPoints += 14;
-            console.log("Success! +14 points");
-            break;
-          default:
-            return;
-        }
-      } else if (!success) {
-        console.log(
-          "The given string was not found as a word according to Merriam Webster's dictionary"
-        );
-      }
-    } catch (error) {
-      console.error("Error checking word:", error);
-    }
-  };
-
-  let fakePerson = {
-    letterCount: ["C", "A", "T"],
-    wordCount: ["", ""],
-    currentPoints: Math.floor(Math.random() * 10),
-  };
   const clickLetter = (event) => {
-    setWord(event.target.value);
-    //fake user player data for now, once DB is set up there will be a function to grab the current user's profile from the DB to push the letters to.
-    addNewLetter(fakePerson);
-    console.log(fakePerson.letterCount);
-  };
-
-  const addNewLetter = (player: Player) => {
-    player.letterCount.push(word);
+    setWord((prev) => {
+      let updatedWord = prev + event.target.value;
+      console.log(updatedWord);
+      return updatedWord;
+    });
   };
 
   const endGame = () => {
     setTimeLeft(0);
   };
+
+  const deleteGameLobby = async (e, game_code: number) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("/api/delete-game", {
+        method: "POST",
+        body: JSON.stringify({ game_code }),
+        cache: "no-cache",
+      });
+
+      if (!response.ok) {
+        throw new Error("There was an error deleting the current game lobby");
+      }
+
+      router.push("/");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   // Effect to start the timer when timerRunning state changes
   useEffect(() => {
     let timer;
@@ -260,29 +178,58 @@ const BoggleBoard = () => {
           >
             Generate new board
           </button>
+          <button
+            onClick={(e) => deleteGameLobby(e, game_code)}
+            className="my-4 bg-red-500 hover:bg-red-700 text-white font-bold block mx-auto w-fit text-center p-4 rounded"
+          >
+            Delete game lobby
+          </button>
         </div>
       ) : (
         <div>
-          <button
-            onClick={endGame}
-            className="my-4 bg-red-500 hover:bg-red-700 text-white font-bold block mx-auto w-full text-center p-4 rounded"
-          >
-            End Game
-          </button>
-          <div className="bg-blue-500 w-fit mx-auto my-4 p-4">
-            <p className="text-center my-2 text-white text-3xl font-semibold">
-              Time Left: {timeLeft} seconds
-            </p>
-            {rows}
-            <button
-              onClick={() => checkWord(getCurrentPlayer())}
-              className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold p-4 text-2xl w-full rounded"
-            >
-              Check Word
-            </button>
-            <div className="text-center text-xl font-semibold">
-              <p>Points:</p>
-              <p>{points}</p>
+          <div className="flex items-center content-center">
+            <div className="bg-blue-500 w-fit m-12 p-4">
+              <p className="text-center my-2 text-white text-3xl font-semibold">
+                Time Left: {timeLeft} seconds
+              </p>
+              {rows}
+              <h2 className="font-semibold text-2xl">Current Word:</h2>
+              <p>{word.length > 0 ? word : "Nothing yet..."}</p>
+              <button
+                onClick={() => checkWord(getCurrentPlayer())}
+                className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold p-4 text-2xl w-full rounded"
+              >
+                Check Word
+              </button>
+              <button
+                onClick={() => setWord("")}
+                className="mt-4 bg-red-600 hover:bg-red-700 text-white font-bold p-4 text-2xl w-full rounded"
+              >
+                Clear
+              </button>
+            </div>
+            <div className="flex flex-col w-3/12 mx-auto">
+              <h4 className="font-semibold text-3xl text-center my-8">
+                Players:
+              </h4>
+              <ol className="flex justify-around w-full">
+                {players.map((player, index) => (
+                  <li key={index}>{player}</li>
+                ))}
+              </ol>
+              <button
+                onClick={(e) => deleteGameLobby(e, game_code)}
+                className="my-4 bg-red-500 hover:bg-red-700 text-white font-bold block mx-auto w-full text-center p-4 rounded mt-12"
+              >
+                Delete Lobby
+              </button>
+
+              <button
+                onClick={endGame}
+                className="my-4 bg-red-500 hover:bg-red-700 text-white font-bold block mx-auto w-full text-center p-4 rounded"
+              >
+                End Game
+              </button>
             </div>
           </div>
         </div>
@@ -291,4 +238,4 @@ const BoggleBoard = () => {
   );
 };
 
-export default BoggleBoard;
+export default ActiveGame;
