@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     // Update the game status
     const { data, error } = await supabase
       .from("boggle_game")
-      .update({ game_active: true })
+      .update({ game_active: true , winner: false})
       .eq("game_code", game_code)
       .select();
 

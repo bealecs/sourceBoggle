@@ -1,6 +1,11 @@
 "use client";
 
-export const StartGameButton = ({game_code} : {game_code: number}) => {
+interface Props {
+  game_code: number;
+  onGameStart?: () => {};
+}
+
+export const StartGameButton = (props: Props) => {
   
   const startGame = async (e, game_code: number) => {
     e.preventDefault();
@@ -15,8 +20,11 @@ export const StartGameButton = ({game_code} : {game_code: number}) => {
           throw new Error("Failed to start game");
         }
   
+        if(props.onGameStart) {
+          props.onGameStart();
+        }
+
         const result = await response.json();
-  
         console.log(result);
       } catch (error) {
         console.log(error);
@@ -25,5 +33,5 @@ export const StartGameButton = ({game_code} : {game_code: number}) => {
       location.reload();
     };
 
-  return <button onClick={(e) => startGame(e, game_code)}>Start Game</button>;
+  return <button className="my-4 bg-blue-500 hover:bg-blue-700 text-white font-bold block mx-auto h-fit text-center p-4 rounded mt-12" onClick={(e) => startGame(e, props.game_code)}>Start Game</button>;
 };

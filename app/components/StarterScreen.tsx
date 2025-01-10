@@ -8,6 +8,7 @@ export const StarterScreen = () => {
   const [name2, setName2] = useState<string>("");
   const [gameCode, setGameCode] = useState<number>();
   const [isMounted, setIsMounted] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
 
   const handleCreateGame = async (e, name: string) => {
@@ -35,7 +36,7 @@ export const StarterScreen = () => {
 
       if(isMounted) {
         console.log("Navigating to route...")
-        router.push(`./${result.data[0].game_code}`);
+        router.push(`./${name}/${result.data[0].game_code}`);
       }
 
     } catch (error) {
@@ -72,11 +73,12 @@ export const StarterScreen = () => {
       createPlayer(name, gameCode);
       if(isMounted) {
         console.log("Navigating to route...")
-        router.push(`./${result.data[0].game_code}`);
+        router.push(`./${name}/${result.data[0].game_code}`);
       }
 
     } catch (error) {
-      console.error('Network error:', error);
+      console.log(error)
+      setErrorMessage("There was an error joining the desired lobby. Please ensure you have the correct code.")
     }
     
   }
@@ -90,7 +92,7 @@ export const StarterScreen = () => {
   }
 
   return (
-    <div className="w-full text-center">
+    <div className="w-3/12 mx-auto text-center">
       <h1 className="text-6xl">Start a new game of boggle</h1>
       <form
         onSubmit={(e) => handleJoinGame(e, name, gameCode)}
@@ -119,6 +121,7 @@ export const StarterScreen = () => {
           onChange={(e) => setGameCode(parseInt(e.target.value))}
         />
         <button className="text-3xl border-4 rounded-xl p-4" type="submit">Join lobby</button>
+        {errorMessage != null && <p className="my-4 text-red-500">{errorMessage}</p>}
       </form>
       <h2 className='text-5xl'>OR</h2>
       <form onSubmit={(e) => handleCreateGame(e, name2)} className='flex flex-col w-fit mx-auto border-4 rounded-xl p-8 text-3xl my-12'>

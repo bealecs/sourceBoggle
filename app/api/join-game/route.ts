@@ -9,8 +9,10 @@ export async function POST(req: Request) {
     const {data: existingPlayers, error: fetchError} = await supabase.from("boggle_game").select("players").eq("game_code", game_code).single();
 
     if (fetchError) {
-      console.error("Error fetching existing players:", fetchError);
-      return;
+      return NextResponse.json(
+        { success: false, error: fetchError.message },
+        { status: 500 }
+      );
     }
     
     const updatedPlayers = existingPlayers?.players || [];
