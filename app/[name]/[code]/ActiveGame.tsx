@@ -33,7 +33,7 @@ const ActiveGame = ({
   const [word, setWord] = useState<string>("");
   const [wordList, setWordList] = useState<string[]>([]);
   const [points, setPoints] = useState<number>(0);
-  const [timeLeft, setTimeLeft] = useState(10); // Initial time left is 210 seconds
+  const [timeLeft, setTimeLeft] = useState(210); // Initial time left is 210 seconds
   const [timerRunning, setTimerRunning] = useState(false); // State to track if timer is running
   const [boardLetters, setBoardLetters] = useState([]);
   const [boardRotations, setBoardRotations] = useState([]); // New state for storing rotations
@@ -51,7 +51,7 @@ const ActiveGame = ({
   // Function to start the timer
   const startTimer = () => {
     setTimerRunning(true);
-    setTimeLeft(10); // Reset time left to 210 seconds
+    setTimeLeft(210); // Reset time left to 210 seconds
   };
 
   // Function to select a random letter from a die and mark it as used
