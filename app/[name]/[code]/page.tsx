@@ -4,7 +4,6 @@ import ActiveGame from "./ActiveGame";
 import { StartGameButton } from "./StartGameButton";
 import { supabase } from "../../util/supabaseClient";
 import { DeleteLobbyButton } from "./DeleteLobbyButton";
-import { useRouter } from "next/navigation";
 
 interface Props {
   player: string;
@@ -17,7 +16,45 @@ const GameLobby = ({ params }: { params: { code: string, name: string } }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [gameCode, setGameCode] = useState<number>(parseInt(params.code));
   const [endScreenData, setEndScreenData] = useState<Props[]>([]);
-  const router = useRouter();
+
+  const comparePlayersForVictory = async (playerList: string[]) => {
+    try {
+      // Fetch data for all players concurrently
+      const playerDataPromises = playerList.map((playerName) =>
+        supabase
+          .from("boggle_players")
+          .select("player_name, word_count, current_points")
+          .eq("player_name", playerName)
+          .single()
+      );
+  
+      const results = await Promise.all(playerDataPromises);
+  
+      // Prepare end screen data
+      const updatedData = results
+        .map(({ data, error }, index) => {
+          if (error) {
+            console.error(`Error fetching data for player ${playerList[index]}:`, error);
+            return null;
+          }
+          if (!data) {
+            console.log(`No data found for player ${playerList[index]}`);
+            return null;
+          }
+  
+          return {
+            player: data.player_name,
+            points: data.current_points || 0,
+            words: Array.isArray(data.word_count) ? data.word_count : [],
+          };
+        })
+        .filter(Boolean); // Filter out null results
+  
+      setEndScreenData(updatedData);
+    } catch (error) {
+      console.error("Error comparing players for victory:", error);
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -36,24 +73,21 @@ const GameLobby = ({ params }: { params: { code: string, name: string } }) => {
 
   useEffect(() => {
     const subscribedChanges = supabase
-      .channel("custom-all-channel")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "boggle_game" },
-        (payload) => {
-          console.log("Change received:", payload);
-          // Check if the payload includes new players joining
-          if (
-            payload.eventType === "INSERT" ||
-            payload.eventType === "UPDATE"
-          ) {
-            fetchData(); // Sets the data to match the updated payload
-          }
-        }
-      )
-      .subscribe();
-
-    fetchData();
+  .channel("custom-all-channel")
+  .on(
+    "postgres_changes",
+    { event: "*", schema: "public", table: "boggle_game" },
+    (payload) => {
+      console.log("Change received:", payload);
+      fetchData(); // Fetch updated game data
+      if (payload.eventType === "UPDATE" && payload.new.winner) {
+        comparePlayersForVictory(payload.new.players); // Fetch players for end screen
+      }
+    }
+  )
+  .subscribe();
+    
+  fetchData();
     return () => {
       supabase.removeChannel(subscribedChanges);
     };
@@ -86,57 +120,25 @@ const GameLobby = ({ params }: { params: { code: string, name: string } }) => {
     await fetchData();
   };
 
-  const comparePlayersForVictory = async (playerList) => {
-      try {
-        // Fetch data for all players concurrently
-        const playerDataPromises = playerList.map((playerName) =>
-          supabase.from("boggle_players").select().eq("player_name", playerName)
-        );
-    
-        const results = await Promise.all(playerDataPromises);
-    
-        // Prepare end screen data in a single batch
-        const updatedData = results
-          .map(({ data, error }, index) => {
-            if (error) {
-              console.error(`Error fetching data for player ${playerList[index]}:`, error);
-              return null;
-            }
-            if (!data || data.length === 0) {
-              console.log(`No data found for player ${playerList[index]}`);
-              return null;
-            }
-    
-            const wordCount = data[0].word_count || [];
-            const currentPoints = data[0].current_points
-            const playerName = data[0].player_name;
-    
-            return { player: playerName, points: currentPoints, words: Array.isArray(wordCount) ? [...wordCount] : [] };
-          })
-          .filter(Boolean); // Remove null entries
-    
-        setEndScreenData(updatedData); // Batch update the state
-      } catch (error) {
-        console.error("Error comparing players for victory:", error);
-      }
-    };
-    console.log(endScreenData.map((player) => player))
-  if (gameData.winner) {
+    if (gameData.winner) {
     return (
       <div className="h-screen items-center w-7/12 m-auto flex-column content-center">
         <h1 className="text-6xl text-center text-red-500 h-fit my-12">
           Game Over
         </h1>
          <h2 className="text-center text-3xl font-semibold">Results:</h2>
-          {endScreenData ? endScreenData.map((player, index) => {
-            return (<div key={index} className="my-12">
+         <div className="flex justify-around">
+         {endScreenData ? endScreenData.map((player, index) => {
+            return (<div key={index} className="my-12 max-h-[40vh] min-h-[10vh] p-4">
               <ul>
                 <li>Player:{player.player}</li>
-                <li>Words: {[...player.words]}</li>
+                {player.words.map((word, index) => <li key={index} className="mr-4 my-2">{word}</li>)}
                 <li>Points Earned: {player.points}</li>
               </ul>
             </div>)
           }) : <p>No data was found</p>}
+         </div>
+          
         <div className="flex justify-around">
           <StartGameButton
             game_code={gameData.game_code}

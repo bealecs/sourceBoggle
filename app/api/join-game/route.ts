@@ -3,7 +3,6 @@ import { supabase } from '../../util/supabaseClient';
 
 export async function POST(req: Request) {
   try {
-    // Ensure you're correctly parsing the JSON body
     const { playerName, game_code } = await req.json();
 
     const {data: existingPlayers, error: fetchError} = await supabase.from("boggle_game").select("players").eq("game_code", game_code).single();

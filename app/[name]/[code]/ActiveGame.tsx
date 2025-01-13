@@ -32,6 +32,8 @@ const ActiveGame = ({
 
   const [word, setWord] = useState<string>("");
   const [wordList, setWordList] = useState<string[]>([]);
+  const [endOfGameWordList, setEndOfGameWordList] = useState<string[]>([]);
+  const [endOfGamePoints, setEndOfGamePoints] = useState<number>(0);
   const [points, setPoints] = useState<number>(0);
   const [timeLeft, setTimeLeft] = useState(210); // Initial time left is 210 seconds
   const [timerRunning, setTimerRunning] = useState(false); // State to track if timer is running
@@ -145,9 +147,9 @@ const ActiveGame = ({
     return rowDiff <= 1 && colDiff <= 1;
   };
 
+
   const endGame = async () => {
     try {
-      // Save current state
       const finalPoints = points;
       const finalWordList = [...wordList];
   
@@ -186,7 +188,6 @@ const ActiveGame = ({
       console.log("Game successfully ended:", gameData);
       console.log("Player successfully updated:", playerData);
   
-      // Only clear state after successful updates
       setTimeLeft(0);
       setWord("");
       setPoints(0);
