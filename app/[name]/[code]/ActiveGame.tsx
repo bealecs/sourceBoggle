@@ -32,8 +32,6 @@ const ActiveGame = ({
 
   const [word, setWord] = useState<string>("");
   const [wordList, setWordList] = useState<string[]>([]);
-  const [endOfGameWordList, setEndOfGameWordList] = useState<string[]>([]);
-  const [endOfGamePoints, setEndOfGamePoints] = useState<number>(0);
   const [points, setPoints] = useState<number>(0);
   const [timeLeft, setTimeLeft] = useState(210); // Initial time left is 210 seconds
   const [timerRunning, setTimerRunning] = useState(false); // State to track if timer is running
@@ -198,9 +196,84 @@ const ActiveGame = ({
     }
   };
 
+  const addWordToWordCount = async (paramWord: string) => {
+    let wordLength = paramWord.length;
+    let newPoints = points;
+  
+    // Calculate new points
+    switch (wordLength) {
+      case 3:
+        newPoints += 1;
+        break;
+      case 4:
+        newPoints += 2;
+        break;
+      case 5:
+        newPoints += 3;
+        break;
+      case 6:
+        newPoints += 4;
+        break;
+      case 7:
+        newPoints += 5;
+        break;
+      case 8:
+        newPoints += 6;
+        break;
+      case 9:
+        newPoints += 7;
+        break;
+      case 10:
+        newPoints += 8;
+        break;
+      case 11:
+        newPoints += 9;
+        break;
+      case 12:
+        newPoints += 10;
+        break;
+      case 13:
+        newPoints += 11;
+        break;
+      case 14:
+        newPoints += 12;
+        break;
+      case 15:
+        newPoints += 13;
+        break;
+      case 16:
+        newPoints += 14;
+        break;
+      default:
+        return;
+    }
+  
+    // Update state
+    const updatedWordList = [...wordList, paramWord];
+    setPoints(newPoints);
+    setWordList(updatedWordList);
+  
+    // Update database with fresh values
+    const { data, error } = await supabase
+      .from("boggle_players")
+      .update({
+        current_points: newPoints,
+        word_count: updatedWordList,
+      })
+      .eq("player_name", currentPlayer)
+      .eq("current_game_lobby_code", game_code)
+      .select();
+  
+    if (error) {
+      console.log("Error received attempting to update player profile:", error);
+    } else {
+      console.log(data);
+    }
+  };
+
   const checkWord = async () => {
     if (word.length < 3) {
-      console.log("You must have atleast 3 letters in your word!");
+      alert("You must have atleast 3 letters in your word!");
       return;
     }
     console.log("checking word", word);
@@ -224,54 +297,7 @@ const ActiveGame = ({
       });
 
       if (success) {
-        setWordList((prev) => [...prev, word]);
-        let wordLength = word.length;
-        switch (wordLength) {
-          case 3:
-            setPoints((prev) => prev + 1);
-            break;
-          case 4:
-            setPoints((prev) => prev + 2);
-            break;
-          case 5:
-            setPoints((prev) => prev + 3);
-            break;
-          case 6:
-            setPoints((prev) => prev + 4);
-            break;
-          case 7:
-            setPoints((prev) => prev + 5);
-            break;
-          case 8:
-            setPoints((prev) => prev + 6);
-            break;
-          case 9:
-            setPoints((prev) => prev + 7);
-            break;
-          case 10:
-            setPoints((prev) => prev + 8);
-            break;
-          case 11:
-            setPoints((prev) => prev + 9);
-            break;
-          case 12:
-            setPoints((prev) => prev + 10);
-            break;
-          case 13:
-            setPoints((prev) => prev + 11);
-            break;
-          case 14:
-            setPoints((prev) => prev + 12);
-            break;
-          case 15:
-            setPoints((prev) => prev + 13);
-            break;
-          case 16:
-            setPoints((prev) => prev + 14);
-            break;
-          default:
-            return;
-        }
+        addWordToWordCount(word);
       } else if (!success) {
         alert(
           "The given string was not found as a word according to Merriam Webster's dictionary"
@@ -295,7 +321,6 @@ const ActiveGame = ({
           if (prevTime <= 1) {
             clearInterval(timer);
             setTimerRunning(false);
-            endGame(); // Call async endGame
             return 0;
           }
           return prevTime - 1;
@@ -313,6 +338,12 @@ const ActiveGame = ({
     }
     initializeGame();
   }, [game_code]);
+
+  useEffect(() => {
+    if (timeLeft === 0 && !timerRunning) {
+      endGame();
+    }
+  }, [timeLeft, timerRunning]);
 
    // Render loading state
    if (isLoading) {

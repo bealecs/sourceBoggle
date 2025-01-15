@@ -30,7 +30,6 @@ export const StartGameButton = (props: Props) => {
         console.log(error);
       }
   
-      location.reload();
     };
 
   return <button className="my-4 bg-blue-500 hover:bg-blue-700 text-white font-bold block mx-auto h-fit text-center p-4 rounded mt-12" onClick={(e) => startGame(e, props.game_code)}>Start Game</button>;

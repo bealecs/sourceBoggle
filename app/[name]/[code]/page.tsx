@@ -25,6 +25,7 @@ const GameLobby = ({ params }: { params: { code: string, name: string } }) => {
           .from("boggle_players")
           .select("player_name, word_count, current_points")
           .eq("player_name", playerName)
+          .eq("current_game_lobby_code", params.code)
           .single()
       );
   
@@ -76,7 +77,7 @@ const GameLobby = ({ params }: { params: { code: string, name: string } }) => {
   .channel("custom-all-channel")
   .on(
     "postgres_changes",
-    { event: "*", schema: "public", table: "boggle_game" },
+    { event: "*", schema: "public", table: "boggle_game", filter: `game_code=eq.${gameCode}`},
     (payload) => {
       console.log("Change received:", payload);
       fetchData(); // Fetch updated game data
@@ -131,9 +132,9 @@ const GameLobby = ({ params }: { params: { code: string, name: string } }) => {
          {endScreenData ? endScreenData.map((player, index) => {
             return (<div key={index} className="my-12 max-h-[40vh] min-h-[10vh] p-4">
               <ul>
-                <li>Player:{player.player}</li>
+                <li>{player.player}</li>
+                <li>{player.points} Points</li>
                 {player.words.map((word, index) => <li key={index} className="mr-4 my-2">{word}</li>)}
-                <li>Points Earned: {player.points}</li>
               </ul>
             </div>)
           }) : <p>No data was found</p>}
