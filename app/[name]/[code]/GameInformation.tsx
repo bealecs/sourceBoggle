@@ -11,12 +11,12 @@ interface GameDataProps {
 export const GameInformation = ({ wordList, players, points, endGame, visible, setVisibility}: GameDataProps) => {
   return (
     <div className={`z-10 bg-black h-screen w-full ${visible ? "absolute top-0 p-2" : "hidden"} content-center`}>      
-        <div className="flex justify-between w-full lg:justify-around">
+        <div className="flex-col justify-between w-full">
         {wordList.length > 0 && (
           <div>
             <h4 className="font-semibold text-2xl">Points: {points}</h4>
             <h4 className="font-semibold text-3xl my-8">Words:</h4>
-            <ol className="flex w-full h-4">
+            <ol className="flex w-full h-4 flex-wrap h-fit">
               {wordList.map((word, index) => (
                 <li key={index} className="mr-8 mb-8">
                   {word}
