@@ -1,11 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../util/supabaseClient";
+import { GameInformation } from "./GameInformation";
 
 const ActiveGame = ({
   game_code,
   players,
-  currentPlayer
+  currentPlayer,
 }: {
   game_code: number;
   players: string[];
@@ -45,7 +46,7 @@ const ActiveGame = ({
   const [clickedLetters, setClickedLetters] = useState<
     { row: number; col: number }[]
   >([]); // New state to track clicked letters
-
+  const [gameInfoOpen, setGameInfoOpen] = useState<boolean>(false);
   const rotations = [0, 90, 180, 270];
 
   // Function to start the timer
@@ -103,7 +104,7 @@ const ActiveGame = ({
           selectRandomLetter(rowIndex * 4 + colIndex)
         )
       );
-      
+
       const { error } = await supabase
         .from("boggle_game")
         .update({ letters: newBoardLetters })
@@ -122,14 +123,17 @@ const ActiveGame = ({
   };
 
   const clickLetter = (event, row: number, col: number) => {
+    if (lastClicked && lastClicked.col === col && lastClicked.row === row) {
+      console.log("Clicking again");
+      return;
+    }
+
     if (lastClicked === null || isAdjacent(lastClicked, { row, col })) {
       setWord((prev) => {
         let updatedWord = prev + event.target.value;
-        console.log(updatedWord);
         return updatedWord;
       });
       setLastClicked({ row, col });
-
       // Add the clicked letter to the clickedLetters array
       setClickedLetters((prev) => [...prev, { row, col }]); // Add the clicked letter's position to clickedLetters
     }
@@ -145,52 +149,50 @@ const ActiveGame = ({
     return rowDiff <= 1 && colDiff <= 1;
   };
 
-
   const endGame = async () => {
     try {
       const finalPoints = points;
       const finalWordList = [...wordList];
-  
+
       // First update game status
       const { data: gameData, error: gameError } = await supabase
         .from("boggle_game")
         .update({
           game_active: false,
           winner: true,
-          letters: []
+          letters: [],
         })
         .eq("game_code", game_code)
         .select();
-  
+
       if (gameError) {
         console.error("Error updating game status:", gameError);
         return;
       }
-  
+
       // Then update player details
       const { data: playerData, error: playerError } = await supabase
         .from("boggle_players")
         .update({
           current_points: finalPoints,
-          word_count: finalWordList
+          word_count: finalWordList,
         })
         .eq("current_game_lobby_code", game_code)
         .eq("player_name", currentPlayer)
         .select();
-  
+
       if (playerError) {
         console.error("Error updating player:", playerError);
         return;
       }
-  
+
       console.log("Game successfully ended:", gameData);
       console.log("Player successfully updated:", playerData);
-  
+
       setTimeLeft(0);
       setWord("");
       setPoints(0);
       setWordList([]);
-  
     } catch (error) {
       console.error("Error in endGame:", error);
     }
@@ -199,60 +201,74 @@ const ActiveGame = ({
   const addWordToWordCount = async (paramWord: string) => {
     let wordLength = paramWord.length;
     let newPoints = points;
-  
+
     // Calculate new points
     switch (wordLength) {
       case 3:
         newPoints += 1;
+        alert("Well done, +1 point");
         break;
       case 4:
         newPoints += 2;
+        alert("Well done, +2 points");
         break;
       case 5:
         newPoints += 3;
+        alert("Well done, +3 points");
         break;
       case 6:
         newPoints += 4;
+        alert("Well done, +4 points");
         break;
       case 7:
         newPoints += 5;
+        alert("Well done, +5 points");
         break;
       case 8:
         newPoints += 6;
+        alert("Well done, +6 points");
         break;
       case 9:
         newPoints += 7;
+        alert("Well done, +7 points");
         break;
       case 10:
         newPoints += 8;
+        alert("Well done, +8 points");
         break;
       case 11:
         newPoints += 9;
+        alert("Well done, +9 points");
         break;
       case 12:
         newPoints += 10;
+        alert("Well done, +10 points");
         break;
       case 13:
         newPoints += 11;
+        alert("Well done, +11 points");
         break;
       case 14:
         newPoints += 12;
+        alert("Well done, +12 points");
         break;
       case 15:
         newPoints += 13;
+        alert("Well done, +13 points");
         break;
       case 16:
         newPoints += 14;
+        alert("Well done, +14 points");
         break;
       default:
         return;
     }
-  
+
     // Update state
     const updatedWordList = [...wordList, paramWord];
     setPoints(newPoints);
     setWordList(updatedWordList);
-  
+
     // Update database with fresh values
     const { data, error } = await supabase
       .from("boggle_players")
@@ -263,7 +279,7 @@ const ActiveGame = ({
       .eq("player_name", currentPlayer)
       .eq("current_game_lobby_code", game_code)
       .select();
-  
+
     if (error) {
       console.log("Error received attempting to update player profile:", error);
     } else {
@@ -274,6 +290,13 @@ const ActiveGame = ({
   const checkWord = async () => {
     if (word.length < 3) {
       alert("You must have atleast 3 letters in your word!");
+      return;
+    }
+    if (wordList.includes(word)) {
+      alert("Whoops, you have already gotten that word.");
+      setLastClicked(null);
+      setClickedLetters([]);
+      setWord("");
       return;
     }
     console.log("checking word", word);
@@ -335,7 +358,7 @@ const ActiveGame = ({
       setIsLoading(true);
       await checkForLetterConfig();
       startTimer();
-    }
+    };
     initializeGame();
   }, [game_code]);
 
@@ -345,8 +368,8 @@ const ActiveGame = ({
     }
   }, [timeLeft, timerRunning]);
 
-   // Render loading state
-   if (isLoading) {
+  // Render loading state
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <p className="text-2xl">Loading game board...</p>
@@ -355,7 +378,7 @@ const ActiveGame = ({
   }
 
   const rows = boardLetters.map((row, rowIndex) => (
-    <div key={rowIndex} className="flex">
+    <div key={rowIndex} className="flex justify-center">
       {row.map((letter, colIndex) => {
         const rotation = boardRotations[rowIndex * 4 + colIndex];
         const isClicked = clickedLetters.some(
@@ -380,64 +403,49 @@ const ActiveGame = ({
   ));
 
   return (
-    
-        <div>
-          <div className="flex items-center justify-center">
-            <div className="bg-blue-500 w-fit m-12 p-4">
-              <p className="text-center my-2 text-white text-3xl font-semibold">
-                Time Left: {timeLeft} seconds
-              </p>
-              {rows}
-              <h2 className="font-semibold text-2xl">Current Word:</h2>
-              <p>{word.length > 0 ? word : "Nothing yet..."}</p>
-              <button
-                onClick={() => checkWord()}
-                className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold p-4 text-2xl w-full rounded"
-              >
-                Check Word
-              </button>
-              <button
-                onClick={() => {
-                  setLastClicked(null);
-                  setClickedLetters([]);
-                  setWord("");
-                }}
-                className="mt-4 bg-red-600 hover:bg-red-700 text-white font-bold p-4 text-2xl w-full rounded"
-              >
-                Clear
-              </button>
-            </div>
-            <div className="w-fit">
-              <div className="flex flex-col w-4/12">
-                <h4 className="font-semibold text-3xl my-8">Players:</h4>
-                <ol className="flex w-full">
-                  {players.map((player, index) => (
-                    <li key={index} className="mr-8 mb-8">
-                      {player}
-                    </li>
-                  ))}
-                </ol>
-                <h4 className="font-semibold text-3xl my-8">Words:</h4>
-                <ol className="flex w-full">
-                  {wordList.map((word, index) => (
-                    <li key={index} className="mr-8 mb-8">
-                      {word}
-                    </li>
-                  ))}
-                </ol>
-                <p className="font-semibold text-2xl">Points: {points}</p>
-              </div>
-              <div>
-                <button
-                  onClick={() => endGame()}
-                  className="my-4 bg-red-500 hover:bg-red-700 text-white font-bold block mx-auto w-full h-fit text-center p-4 rounded"
-                >
-                  End Game
-                </button>
-              </div>
-            </div>
-          </div>
+    <div>
+      <div className="flex-col lg:flex items-center justify-center">
+        <div className="bg-blue-500 p-4 h-screen">
+          <p className="text-center my-2 text-white text-3xl font-semibold text-yellow-300">
+            Time Left: {timeLeft} seconds
+          </p>
+          <button
+            className="w-fit mx-auto block font-semibold text-xl underline text-blue-900"
+            onClick={() => setGameInfoOpen(true)}
+          >
+            View Game Information
+          </button>
+          <div className="my-8">{rows}</div>
+          <h2 className="font-semibold text-2xl">Current Word:</h2>
+          <p className="mb-8">{word.length > 0 ? word : "Nothing yet..."}</p>
+          <h2 className="font-semibold text-2xl">My Points: {points}</h2>
+          <button
+            onClick={() => checkWord()}
+            className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold p-4 text-2xl w-full rounded"
+          >
+            Check Word
+          </button>
+          <button
+            onClick={() => {
+              setLastClicked(null);
+              setClickedLetters([]);
+              setWord("");
+            }}
+            className="mt-4 bg-red-600 hover:bg-red-700 text-white font-bold p-4 text-2xl w-full rounded"
+          >
+            Clear
+          </button>
         </div>
+        <GameInformation
+          wordList={wordList}
+          players={players}
+          points={points}
+          endGame={endGame}
+          visible={gameInfoOpen}
+          setVisibility={setGameInfoOpen}
+        />
+      </div>
+    </div>
   );
 };
 

@@ -92,11 +92,11 @@ export const StarterScreen = () => {
   }
 
   return (
-    <div className="w-3/12 mx-auto text-center">
-      <h1 className="text-6xl">Start a new game of boggle</h1>
+    <div className="w-full mx-auto text-center">
+      <h1 className="text-4xl my-4 lg:text-6xl">Start a new game of boggle</h1>
       <form
         onSubmit={(e) => handleJoinGame(e, name, gameCode)}
-        className="flex flex-col justify-center my-12 text-3xl border-4 rounded-xl p-8 w-fit mx-auto"
+        className="flex flex-col justify-center my-12 lg:text-3xl text-xl border-4 rounded-xl lg:p-8 p-4 w-fit mx-auto"
       >
         <label htmlFor="name" className="mt-4">
           Enter your name:
@@ -108,6 +108,8 @@ export const StarterScreen = () => {
           value={name}
           onChange={(e) => setName(e.target.value)}
           autoComplete="off"
+          required
+          minLength={1}
         />
         <label htmlFor="game-code" className="mt-8">
           Enter Lobby Code:
@@ -119,19 +121,20 @@ export const StarterScreen = () => {
           autoComplete="off"
           value={gameCode}
           onChange={(e) => setGameCode(parseInt(e.target.value))}
+          required
+          minLength={1}
         />
-        <button className="text-3xl border-4 rounded-xl p-4" type="submit">Join lobby</button>
+        <button className="lg:text-3xl text-xl border-4 rounded-xl p-4" type="submit">Join lobby</button>
         {errorMessage != null && <p className="my-4 text-red-500">{errorMessage}</p>}
       </form>
-      <h2 className='text-5xl'>OR</h2>
-      <form onSubmit={(e) => handleCreateGame(e, name2)} className='flex flex-col w-fit mx-auto border-4 rounded-xl p-8 text-3xl my-12'>
+      <h2 className='lg:text-5xl text-3xl content-center'>OR</h2>
+      <form onSubmit={(e) => handleCreateGame(e, name2)} className='flex flex-col w-fit mx-auto border-4 rounded-xl p-4 lg:p-8 lg:text-3xl text-xl my-12'>
         <label htmlFor='name2' className='mt-4'>Enter your name:</label>
-        <input type="text" id='name2' className='mb-8 text-black' value={name2} onChange={(e) => setName2(e.target.value)} autoComplete="off"/>
-      <button type="submit" className="text-3xl border-4 rounded-xl p-4">
+        <input type="text" id='name2' className='mb-8 text-black' value={name2} onChange={(e) => setName2(e.target.value)} autoComplete="off" required minLength={1}/>
+      <button type="submit" className="lg:text-3xl text-xl border-4 rounded-xl p-4">
         Create New Game
       </button>
       </form>
-      
     </div>
   );
 };

@@ -4,6 +4,7 @@ import ActiveGame from "./ActiveGame";
 import { StartGameButton } from "./StartGameButton";
 import { supabase } from "../../util/supabaseClient";
 import { DeleteLobbyButton } from "./DeleteLobbyButton";
+import { GameInformation } from "./GameInformation";
 
 interface Props {
   player: string;
@@ -156,28 +157,29 @@ const GameLobby = ({ params }: { params: { code: string, name: string } }) => {
       {gameData.game_active ? (
         <ActiveGame game_code={gameCode} players={gameData.players} currentPlayer={params.name} />
       ) : (
-        <div>
-          <a
-            href="/"
-            className="underline text-2xl italic font-semibold hover:cursor-pointer"
-          >
-            Home
-          </a>
-          <h1 className="text-white">Game Lobby: {gameCode}</h1>
-          <ol>
-            {gameData.players.map((player, index) => (
-              <li key={index}>{player}</li>
-            ))}
-          </ol>
-          {gameData.players.length >= 2 ? (
-            <StartGameButton
-              game_code={gameCode}
-              onGameStart={handleGameStart}
-            />
-          ) : (
-            <p>You need atleast 2 players to start a game</p>
-          )}
-        </div>
+        <div className="text-center flex flex-col justify-around h-[50vh]">
+                  <a
+                    href="/"
+                    className="underline text-2xl italic font-semibold hover:cursor-pointer text-blue-500 absolute top-0 left-0 p-2"
+                  >
+                    Back to Home
+                  </a>
+                  <h1 className="text-white text-3xl font-semibold mt-12">Game Lobby: <span className="text-yellow-400">{gameData.game_code}</span></h1>
+                  <ol className="text-3xl font-semibold">
+                    Players:
+                    {gameData.players.map((player, index) => (
+                      <li key={index} className="text-yellow-400 mt-4" >{player}</li>
+                    ))}
+                  </ol>
+                  {gameData.players.length >= 2 ? (
+                    <StartGameButton
+                      game_code={gameData.game_code}
+                      onGameStart={handleGameStart}
+                    />
+                  ) : (
+                    <p className="text-2xl text-red-500 font-semibold">You need atleast 2 players to start a game</p>
+                  )}
+                </div>
       )}
     </div>
   );
