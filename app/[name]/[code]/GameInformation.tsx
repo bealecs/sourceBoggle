@@ -10,7 +10,7 @@ interface GameDataProps {
 }
 export const GameInformation = ({ wordList, players, points, endGame, visible, setVisibility}: GameDataProps) => {
   return (
-    <div className={`absolute z-10 bg-black h-screen w-full ${visible ? "block" : "hidden"} content-center`}>      
+    <div className={`z-10 bg-black h-screen w-full ${visible ? "absolute" : "hidden"} content-center`}>      
         <div className="flex justify-between w-full lg:justify-around">
         {wordList.length > 0 && (
           <div>
