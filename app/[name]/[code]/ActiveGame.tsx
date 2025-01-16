@@ -34,10 +34,10 @@ const ActiveGame = ({
   const [word, setWord] = useState<string>("");
   const [wordList, setWordList] = useState<string[]>([]);
   const [points, setPoints] = useState<number>(0);
-  const [timeLeft, setTimeLeft] = useState(210); // Initial time left is 210 seconds
-  const [timerRunning, setTimerRunning] = useState(false); // State to track if timer is running
+  const [timeLeft, setTimeLeft] = useState(180); 
+  const [timerRunning, setTimerRunning] = useState(false); 
   const [boardLetters, setBoardLetters] = useState([]);
-  const [boardRotations, setBoardRotations] = useState([]); // New state for storing rotations
+  const [boardRotations, setBoardRotations] = useState([]); 
   const [isLoading, setIsLoading] = useState<boolean>();
   const [lastClicked, setLastClicked] = useState<{
     row: number;
@@ -45,14 +45,13 @@ const ActiveGame = ({
   } | null>(null);
   const [clickedLetters, setClickedLetters] = useState<
     { row: number; col: number }[]
-  >([]); // New state to track clicked letters
+  >([]); 
   const [gameInfoOpen, setGameInfoOpen] = useState<boolean>(false);
   const rotations = [0, 90, 180, 270];
 
-  // Function to start the timer
   const startTimer = () => {
     setTimerRunning(true);
-    setTimeLeft(210); // Reset time left to 210 seconds
+    setTimeLeft(180); 
   };
 
   // Function to select a random letter from a die and mark it as used
