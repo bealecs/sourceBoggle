@@ -3,9 +3,9 @@ import { supabase } from '../../util/supabaseClient';
 
 export async function POST(req: Request) {
   try {
-    const playerName = await req.text();  // Read the body as plain text
-    
-    if (!playerName) {
+    const {name, lobbyVisibility} = await req.json();
+
+    if (!name) {
       return NextResponse.json(
         { success: false, error: 'Player name is required' },
         { status: 400 }
@@ -16,7 +16,7 @@ export async function POST(req: Request) {
 
     const { data, error } = await supabase
       .from('boggle_game')
-      .insert([{ game_code: randomLobbyCode, players: [playerName] }])
+      .insert([{ game_code: randomLobbyCode, players: [name], public_lobby: lobbyVisibility === "public" ? true : false}])
       .select();
 
     if (error) {

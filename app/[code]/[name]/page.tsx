@@ -4,7 +4,6 @@ import ActiveGame from "./ActiveGame";
 import { StartGameButton } from "./StartGameButton";
 import { supabase } from "../../util/supabaseClient";
 import { DeleteLobbyButton } from "./DeleteLobbyButton";
-import { GameInformation } from "./GameInformation";
 
 interface Props {
   player: string;
