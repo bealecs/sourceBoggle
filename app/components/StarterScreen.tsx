@@ -100,7 +100,7 @@ export const StarterScreen = () => {
     <div className="w-full mx-auto lg:flex lg:content-center lg:h-screen my-auto">
       <form onSubmit={(e) => handleCreateGame(e, name2)} className='flex flex-col w-11/12 lg:w-fit mx-auto border-4 rounded-xl p-4 lg:p-8 lg:text-3xl text-xl my-4 lg:h-fit content-center lg:my-auto'>
         <label htmlFor='name2' className='mt-4'>Enter your name:</label>
-        <input type="text" id='name2' className='mb-8 text-black' value={name2} onChange={(e) => setName2(e.target.value)} autoComplete="off" required minLength={1}/>
+        <input type="text" id='name2' className='mb-8 text-black rounded p-1' value={name2} onChange={(e) => setName2(e.target.value)} autoComplete="off" required minLength={1}/>
         <label htmlFor="lobby-type">Lobby visibility:</label>
         <select name="lobby-type" id="lobby-type" className="text-black mb-8" onChange={(e) => setLobbyVisibility(e.target.value)}>
           <option value={"public"}>🟢 Public</option>
@@ -121,7 +121,7 @@ export const StarterScreen = () => {
         <input
           type="text"
           id="name"
-          className="text-black"
+          className="text-black rounded p-1"
           value={name}
           onChange={(e) => setName(e.target.value)}
           autoComplete="off"
@@ -134,7 +134,7 @@ export const StarterScreen = () => {
         <input
           type="number"
           id="game-code"
-          className=" mb-8 text-black"
+          className=" mb-8 text-black p-1 rounded"
           autoComplete="off"
           value={gameCode}
           onChange={(e) => setGameCode(parseInt(e.target.value))}
