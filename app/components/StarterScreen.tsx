@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { createPlayer } from "../api/join-game/createPlayer";
 import { useRouter } from "next/navigation";
+import { Loading } from "./loading";
 
 export const StarterScreen = () => {
   const [name, setName] = useState<string>("");
@@ -92,7 +93,7 @@ export const StarterScreen = () => {
   }, []);
 
   if(!isMounted) {
-    return <div>One or more components failed to mount, please reload the page...</div>
+    return <Loading />
   }
 
   return (

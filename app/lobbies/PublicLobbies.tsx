@@ -1,36 +1,49 @@
-import { Suspense } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import { supabase } from "../util/supabaseClient";
-import { LobbyDisplay } from "./LobbyDisplay";
-import { Loading } from "../loader/loading";
+import { Lobby, LobbyDisplay } from "./LobbyDisplay";
+import { Loading } from "../components/loading";
 
-interface Lobby {
-  id: number;
-  created_at: Date;
-  winner: boolean;
-  game_code: number;
-  game_active: boolean;
-  players: string[];
-  letters: string[];
-  public_lobby: boolean;
-}
+export const PublicLobbies = () => {
+  const [data, setData] = useState<Lobby[] | null>(null);
 
-export const PublicLobbies = async () => {
-  const { data, error } = await supabase
-    .from("boggle_game")
-    .select()
-    .eq("public_lobby", true);
+  useEffect(() => {
+    const fetchUpdatedData = async () => {
+      const { data, error } = await supabase
+        .from("boggle_game")
+        .select()
+        .eq("public_lobby", true);
 
-  if (error) {
-    throw new Error(
-      "An error occured fetching the list of available lobbies. Please try again",
-      error
-    );
+      if (!error) {
+        setData(data);
+      }
+    };
+
+    fetchUpdatedData();
+
+    const subscription = supabase
+      .channel("custom-all-channel")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "boggle_game",
+          filter: `public_lobby=eq.${true}`,
+        },
+        () => fetchUpdatedData()
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(subscription);
+    };
+  }, []);
+
+  if(data === null) {
+    return <Loading/>
   }
 
-  const params = Array.isArray(data) ? (data as Lobby[]) : [];
-
-  return (
-  <Suspense fallback={<Loading />}>
-    <LobbyDisplay params={params} />
-  </Suspense>)
+  return <LobbyDisplay params={data} />
 };
