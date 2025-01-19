@@ -97,8 +97,8 @@ export const StarterScreen = () => {
   }
 
   return (
-    <div className="w-full mx-auto">
-      <form onSubmit={(e) => handleCreateGame(e, name2)} className='flex flex-col w-fit mx-auto border-4 rounded-xl p-4 lg:p-8 lg:text-3xl text-xl my-12'>
+    <div className="w-full mx-auto lg:flex lg:content-center lg:h-screen my-auto">
+      <form onSubmit={(e) => handleCreateGame(e, name2)} className='flex flex-col w-11/12 lg:w-fit mx-auto border-4 rounded-xl p-4 lg:p-8 lg:text-3xl text-xl my-4 lg:h-fit content-center lg:my-auto'>
         <label htmlFor='name2' className='mt-4'>Enter your name:</label>
         <input type="text" id='name2' className='mb-8 text-black' value={name2} onChange={(e) => setName2(e.target.value)} autoComplete="off" required minLength={1}/>
         <label htmlFor="lobby-type">Lobby visibility:</label>
@@ -110,10 +110,10 @@ export const StarterScreen = () => {
         Create New Game
       </button>
       </form>
-      <h2 className='lg:text-5xl text-3xl content-center text-center'>OR</h2>
+      <h2 className='lg:text-5xl text-2xl content-center text-center'>OR</h2>
       <form
         onSubmit={(e) => handleJoinGame(e, name, gameCode)}
-        className="flex flex-col justify-center my-12 lg:text-3xl text-xl border-4 rounded-xl lg:p-8 p-4 w-fit mx-auto"
+        className="flex flex-col justify-center my-4 lg:text-3xl text-xl border-4 rounded-xl lg:p-8 p-4 w-11/12 lg:w-fit mx-auto lg:h-fit lg:my-auto"
       >
         <label htmlFor="name" className="mt-4">
           Enter your name:
@@ -121,7 +121,7 @@ export const StarterScreen = () => {
         <input
           type="text"
           id="name"
-          className="w-fit mx-auto text-black"
+          className="text-black"
           value={name}
           onChange={(e) => setName(e.target.value)}
           autoComplete="off"
@@ -134,7 +134,7 @@ export const StarterScreen = () => {
         <input
           type="number"
           id="game-code"
-          className="w-fit mx-auto mb-8 text-black"
+          className=" mb-8 text-black"
           autoComplete="off"
           value={gameCode}
           onChange={(e) => setGameCode(parseInt(e.target.value))}
