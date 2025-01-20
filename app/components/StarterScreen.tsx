@@ -102,7 +102,7 @@ export const StarterScreen = () => {
         <label htmlFor='name2' className='mt-4'>Enter your name:</label>
         <input type="text" id='name2' className='mb-8 text-black rounded p-1' value={name2} onChange={(e) => setName2(e.target.value)} autoComplete="off" required minLength={1}/>
         <label htmlFor="lobby-type">Lobby visibility:</label>
-        <select name="lobby-type" id="lobby-type" className="text-black mb-8" onChange={(e) => setLobbyVisibility(e.target.value)}>
+        <select name="lobby-type" id="lobby-type" className="text-black mb-8 p-4 rounded-xl" onChange={(e) => setLobbyVisibility(e.target.value)}>
           <option value={"public"}>🟢 Public</option>
           <option value={"private"}>🔴 Private</option>
         </select>
