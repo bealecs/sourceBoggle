@@ -37,7 +37,7 @@ export const LobbyDisplay = ({ params }: { params: Lobby[] }) => {
         className="grid grid-cols-4 items-center border-2"
       >
         <li className="p-4 border-r-2">
-          {lobby.game_active ? <span className="text-red-500">🔴 Busy</span> : <span className="text-green-500">🟢 Joinable</span>}
+          {lobby.game_active ? <span className="text-red-500">🔴 Busy</span> : <span className="text-green-500">🟢 Ready</span>}
         </li>
         <li className="p-4 border-r-2">
           <span className="text-blue-500">{lobby.game_code}</span>
