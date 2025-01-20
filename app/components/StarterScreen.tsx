@@ -78,7 +78,7 @@ export const StarterScreen = () => {
       createPlayer(name, gameCode);
       if(isMounted) {
         console.log("Navigating to route...")
-        router.push(`./${name}/${result.data[0].game_code}`);
+        router.push(`./${result.data[0].game_code}/${name}`);
       }
 
     } catch (error) {
