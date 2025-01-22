@@ -166,7 +166,7 @@ const GameLobby = ({ params }: { params: { code: string; name: string } }) => {
           Game Over
         </h1>
         <h2 className="text-center text-3xl font-semibold">Results:</h2>
-        <div className="flex justify-around">
+        <div className="flex justify-around overflow-auto">
           {endScreenData ? (
             endScreenData.map((player, index) => {
               return (

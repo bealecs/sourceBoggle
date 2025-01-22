@@ -14,7 +14,7 @@ export interface Lobby {
   public_lobby: boolean;  
 }
 export const LobbyDisplay = ({ params }: { params: Lobby[] }) => {
-  const [activeGameTooltip, setActiveGameTooltip] = useState(false);
+  const [activeGameTooltipIndex, setActiveGameTooltipIndex] = useState<number | null>(null);
 
   return (
     <Suspense fallback={<Loading/>}>
@@ -48,9 +48,9 @@ export const LobbyDisplay = ({ params }: { params: Lobby[] }) => {
         <li className="p-4 text-center border-r-2">
           {lobby.game_active ? (
             <div className="relative">
-            <p className="text-red-500 w-fit mx-auto cursor-pointer" onMouseEnter={() => setActiveGameTooltip(true)} onMouseLeave={() => setTimeout(() => setActiveGameTooltip(false), 300)}>Unavailable</p>
+            <p className="text-red-500 w-fit mx-auto cursor-pointer" onMouseEnter={() => setActiveGameTooltipIndex(index)} onMouseLeave={() => setTimeout(() => setActiveGameTooltipIndex(null), 300)}>Unavailable</p>
             
-            {activeGameTooltip && <div className="absolute bg-gray-200 text-black border-r-2 border-yellow-300 rounded-xl p-2 text-sm text-left lg:w-7/12 ">
+            {activeGameTooltipIndex === index && <div className="absolute bg-gray-200 text-black border-r-2 border-yellow-300 rounded-xl p-2 text-sm text-left lg:w-7/12 ">
               <p>This lobby is joinable, but the game is currently active. You must wait until the game finishes to join.</p>
             </div>}
             </div>
