@@ -54,6 +54,7 @@ const PregameLobby = ({params} : {params: {code: number}}) => {
 
     return (
         <div className="w-fit mx-auto content-center h-screen text-3xl">
+            <a href="/" className="absolute top-0 left-0 underline text-blue-500 p-2">Back to home</a>
             <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col justify-center items-center content-center border-2 p-4 lg:p-8 rounded-xl">
                 <label htmlFor="name">Enter your name:</label>
                 <input type="text" placeholder="Username..." className="text-black my-4 p-1 rounded" value={name} onChange={(e) => setName(e.target.value)} required minLength={1}/>
