@@ -34,7 +34,7 @@ export const LobbyDisplay = ({ params }: { params: Lobby[] }) => {
     lobby.players.length <= 6 && (
       <div 
         key={index} 
-        className="grid grid-cols-[1.5fr_1fr_1fr_1.5fr] items-center border-2"
+        className="grid grid-cols-[1.5fr_1fr_1fr_1.5fr] items-stretch items-center border-2"
       >
         <li className="p-4 border-r-2">
           {lobby.game_active ? <span className="text-red-500">🔴 Busy</span> : <span className="text-green-500">🟢 Ready</span>}
