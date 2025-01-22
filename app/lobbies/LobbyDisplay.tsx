@@ -22,7 +22,7 @@ export const LobbyDisplay = ({ params }: { params: Lobby[] }) => {
   <a href="/" className="absolute top-0 left-0 underline text-blue-500 p-2">Back to home</a>
   
   {/* Header Row */}
-  <div className="grid grid-cols-[1.5fr_1fr_1fr_1.5fr] items-center">
+  <div className="grid grid-cols-[1.5fr_1fr_1fr_1.5fr] items-stretch items-center">
     <p className="border-2 text-center">Game status:</p>
     <p className="border-2 text-center">Lobby Code:</p>
     <p className="border-2 text-center">Player count:</p>
