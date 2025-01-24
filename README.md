@@ -1,36 +1,22 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Clif's Boggle 
+### Family-friendly Fun! 
 
-## Getting Started
+As all great projects start, I was facing a problem that I wanted to solve. My family loves playing the popular word game, Boggle. However, there is a major flaw with the physical board game that would irritate me as a new parent that was trying to keep a newborn asleep.
 
-First, run the development server:
+#### The Problem:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+When you shake the board around with all of the characters in it, it is **LOUD**. This was often an issue as we like to play around the later hours of the night. 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### The Solution: 
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+I decided to make the board game online as a fun hobby-project. At first, the game started as just a simple board with the logic under the hood to support the original game's construct as much as possible. When I wanted a fresh assortment of letters on the board, rather than shaking the physical game board, I could click a button on my phone and rearrange the board configurations without making any noise. This was great, as it enabled us to play while keeping my baby sound asleep.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+#### Always Tinkering... Learning...
 
-## Learn More
+My passion for programming has brought me a long way and taught me a lot of things. Lately, I have been working heavily with Supabase, an open-source Firebase alternative. Their documentation is fantastic, and their services are a breeze to use as a result.
 
-To learn more about Next.js, take a look at the following resources:
+Up to this point, the game I created was strictly client-sided logic with no persistence after a page refresh. This was fine if we were all gathered around a table hovering over a phone, but it could be better... I mean, the game was now already "mobile", so why not make it playable from anywhere in the world? Removing these restraints and bringing the game over to be server-enabled proved challenging. One thing about me, however, I thrive in a challenging environment (it is when I have the most fun, problem solving). 
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Eventually, I was able to set up game lobbies, allow board configurations to be persistent across devices, and track user word count all while ensuring real-time updates thanks to Supabase. The best part is... **It is all free**. 
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Supabase enables developers to build without needing to invest in infrastructure which is great for me to be able to complete passion projects like this one.
