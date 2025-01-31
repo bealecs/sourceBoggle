@@ -176,8 +176,14 @@ const GameLobby = ({ params }: { params: { code: string; name: string } }) => {
                     <li>{player.points} Points</li>
                     <ul className="max-h-[40vh] min-h-[10vh] overflow-y-auto">
                       {player.words.map((word, index) => (
-                        <li key={index} className="mr-4 my-2 border-2 rounded-xl p-1 pr-4">
-                          {word} <span className="text-yellow-300">+{validatePoints(word)}</span>
+                        <li
+                          key={index}
+                          className="mr-4 my-2 border-2 rounded-xl p-1 pr-4"
+                        >
+                          {word}{" "}
+                          <span className="text-yellow-300">
+                            +{validatePoints(word)}
+                          </span>
                         </li>
                       ))}
                     </ul>
@@ -229,7 +235,12 @@ const GameLobby = ({ params }: { params: { code: string; name: string } }) => {
               </li>
             ))}
           </ol>
-          {gameData.players.length >= 2 ? (
+          <StartGameButton
+            game_code={gameData.game_code}
+            onGameStart={handleGameStart}
+          />
+          {/* This section is used for if I want it to be only multiplayer. Currently I have it set to allow single player matches */}
+          {/* {gameData.players.length >= 2 ? (
             <StartGameButton
               game_code={gameData.game_code}
               onGameStart={handleGameStart}
@@ -238,7 +249,7 @@ const GameLobby = ({ params }: { params: { code: string; name: string } }) => {
             <p className="text-2xl text-red-500 font-semibold">
               You need atleast 2 players to start a game
             </p>
-          )}
+          )} */}
         </div>
       )}
     </div>
