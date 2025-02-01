@@ -404,7 +404,7 @@ const ActiveGame = ({
   return (
     <div>
       <div className="flex-col lg:flex items-center justify-center">
-        <div className="bg-blue-500 p-4 h-screen">
+        <div className="bg-blue-500 p-4 min-h-screen">
           <p className="text-center my-2 text-white text-3xl font-semibold text-yellow-300">
             Time Left: {timeLeft} seconds
           </p>
